@@ -125,7 +125,7 @@
             for (var i = 0; i < booklist.length; i++) {
                 if (booklist[i].includes(bookname) == true)
                 {
-                    result.textContent = localStorage.key(i);
+                    result.textContent = booklist[i]
                     searchresulatpage = searchresulatpage + createtd(booklist[i] );
                 }
                         
