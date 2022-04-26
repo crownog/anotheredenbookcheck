@@ -18,6 +18,7 @@
 <body >
     <div style="text-align: center;">
 <input id="booksearchinput" name="booksearchinput"> <button onclick="bookadd()"> 책추가 </button>
+
 <p id="result"></p>
 <center>
     <div id="resulttd" class="resulttd" style="text-align: center;">
@@ -25,18 +26,16 @@
             <thead>
                 <tr>
                     <th>기억의서</th>
+                    
                     <th>보유갯수</th>
-                    </td>
+                    <th>캐릭터</th>
                     <th>버튼</th>
-                    <th></th>
-                    <th></th>
+                    <th>버튼</th>
                 </tr>
             </thead>
             <tbody id="resulatpage">
 
-                <td>
-
-                </td>
+              
             </tbody>
         </table>
     </div>
@@ -67,8 +66,10 @@
     }
 
     function plusbook(bookname, plusminus) {
-        var bookcnt = localStorage.getItem(bookname.id)
-        var numbookcnt = parseInt(bookcnt);
+      
+        let bookary = getbookinfocnt(bookname.id)
+
+        let numbookcnt = parseInt(bookary[0]);
 
         if( plusminus == 1)
             numbookcnt += 1;
@@ -77,13 +78,17 @@
         else if( plusminus == 3  )
         {
             localStorage.removeItem(bookname.id);
+            let bcnt = booklist.indexOf(bookname.id)
+            booklist.splice(bcnt, 1);
+            savebooklist();            
             searchbook(bookname.id)
             return;
         }
 
 
-        bookcnt = String(numbookcnt);
-        localStorage.setItem(bookname.id, bookcnt)
+        let bookcnt = String(numbookcnt);
+        bookary[0] = bookcnt;
+        saveitemarr(bookname.id, bookary)
         var numb = document.getElementById(bookname.id+'id');
         numb.innerText = bookcnt;
         
@@ -93,25 +98,71 @@
      {
          
         for (var i = 0; i < booklist.length; i++) {
-            if (booklist[i] == true)
+            if (booklist[i] == message.value)
             {
                return;
             }
                     
         }
         booklist.push(message.value)
-        localStorage.setItem(message.value, 0)
+        let bookinfo = ["0", ""]
+        saveitemarr(message.value, bookinfo)
         savebooklist();
         searchbook(message.value);
      }
 
+
+     function changecha(clickbtn)
+     {    
+        const inputcompo = document.getElementById(clickbtn.id+"cha")
+        if( inputcompo != null)
+        {
+            let bookinfo = getbookinfocnt(clickbtn.id)
+
+            if( inputcompo.value.trim() != "" )
+            {
+                bookinfo[1] = inputcompo.value;
+                saveitemarr( clickbtn.id, bookinfo);
+            }
+            
+        }
+     }
+
+     function saveitemarr(bookname, bookinfoarr)
+     {
+         localStorage.setItem(bookname, JSON.stringify(bookinfoarr));
+     }
+
+     function getbookinfocnt(bookname)
+     {
+        const loadedToDos = localStorage.getItem(bookname)
+        let bookcnt = null;
+        if (loadedToDos !== null) {
+            bookcnt = JSON.parse(loadedToDos)
+            if( bookcnt == 0)
+            {
+                bookcnt = [loadedToDos,"" ];
+                saveitemarr(bookname, (bookcnt));
+            }
+            return bookcnt;
+        }
+        return  ["0","" ];
+     }
+
      function createtd(bookname)
      {
-        var te = "<tr> <td> " + bookname + "</td> <td id='"+bookname+"id'>" + localStorage.getItem(bookname) +"</td>"+
+        let bookcnt = getbookinfocnt(bookname);
+        if( bookcnt == null)
+            return;
+            
+        var te = "<tr> " +
+            "<td> " + bookname + "</td>" +
+            "<td id='"+bookname+"id'>" + bookcnt[0] +"</td>"+
+            "<td >" + " <input id='" + bookname + "cha" + "' value='" + bookcnt[1] + "' > <button id='" +bookname +"' onclick=changecha(this)>캐릭명 변경</button>" +"</td>"+
             "<td> <button id='" +bookname +"' onclick=plusbook(this,1)>더하기</button> </td>"+ 
             "<td> <button id='" +bookname +"' onclick=plusbook(this,2)>빼기</button> </td>"+ 
             "<td> <button id='" +bookname +"' onclick=plusbook(this,3)>삭제</button> </td>"+ 
-            " </tr>";
+            "</tr>";
 
             return te;
             
