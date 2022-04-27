@@ -18,6 +18,8 @@
 <body >
     <div style="text-align: center;">
 <input id="booksearchinput" name="booksearchinput"> <button onclick="bookadd()"> 책추가 </button>
+<input id="booksearchinput" name="booksearchinput"> <button onclick="bookadd()"> 리스트 초기화 </button>
+<button onclick="bookadd()"> 리스트 복사 추출 </button>
 
 <p id="result"></p>
 <center>
@@ -171,7 +173,8 @@
      function searchbook(bookname)
      {
         var searchresulatpage = ""
-        if (bookname.trim() != "") {
+        
+        {
 
             for (var i = 0; i < booklist.length; i++) {
                 if (booklist[i].includes(bookname) == true)
@@ -186,6 +189,7 @@
         resulttd.innerHTML = searchresulatpage;
      }
      loadbooklist();
+     searchbook("");
     
     message.addEventListener('input', function () {
         searchbook(this.value)
