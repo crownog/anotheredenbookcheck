@@ -18,7 +18,7 @@
 <body >
     <div style="text-align: center;">
 <input id="booksearchinput" name="booksearchinput"> <button onclick="bookadd()"> 책추가 </button>
-<input id="booksearchinput" name="booksearchinput"> <button onclick="bookadd()"> 리스트 초기화 </button>
+<input id="booksearchinput2" name="booksearchinput2"> <button > 리스트 초기화 </button>
 <button onclick="bookadd()"> 리스트 복사 추출 </button>
 
 <p id="result"></p>
@@ -47,6 +47,7 @@
 </div>
 <script>
     const message = document.querySelector('#booksearchinput');
+    const message2 = document.querySelector('#booksearchinput2');
     const result = document.querySelector('#result');
     const resulttd = document.getElementById('resulatpage');
     let booklist = [];
@@ -106,6 +107,7 @@
             }
                     
         }
+      
         booklist.push(message.value)
         let bookinfo = ["0", ""]
         saveitemarr(message.value, bookinfo)
@@ -151,6 +153,12 @@
         return  ["0","" ];
      }
 
+     function getintcheck(x) {
+        const parsed = parseInt(x);
+        if (isNaN(parsed)) { return 0; }
+        return parsed;
+      }
+
      function createtd(bookname)
      {
         let bookcnt = getbookinfocnt(bookname);
@@ -179,8 +187,16 @@
             for (var i = 0; i < booklist.length; i++) {
                 if (booklist[i].includes(bookname) == true)
                 {
-                    result.textContent = booklist[i]
-                    searchresulatpage = searchresulatpage + createtd(booklist[i] );
+                    result.textContent = booklist[i];
+                    let bookcnt = getbookinfocnt(booklist[i]);
+                    let searchcnt = getintcheck( message2.value)
+                    if( searchcnt > 0)
+                    {
+                        if( getintcheck(bookcnt[0]) >= searchcnt)
+                            searchresulatpage = searchresulatpage + createtd(booklist[i] );
+                    }
+                    else
+                        searchresulatpage = searchresulatpage + createtd(booklist[i] );
                 }
                         
             }
@@ -193,6 +209,10 @@
     
     message.addEventListener('input', function () {
         searchbook(this.value)
+    });
+
+    message2.addEventListener('input', function () {
+        searchbook(message.value)
     });
 </script>
 </body>
